@@ -6,6 +6,7 @@ vec3 corB = vec3(0.0, 0.7, 0.2);
 
 //https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
 //Signed distance functioms
+//A função agora tem a origem da esfera e o raio dela;
 float sdSphere(vec3 p, vec3 origin, float radius){
   return distance(p, origin) - radius;
 }
@@ -16,17 +17,19 @@ float sdBox( vec3 p, vec3 b )
   return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
 }
 
+//Une dois campos de distância/Métrica
 float opUnion(float d1, float d2){
   return min(d1, d2);
 }
 
+//Une dois campos de distância de uma forma suavizada
 float opSmoothUnion( float d1, float d2, float k ) {
     float h = clamp( 0.5 + 0.5*(d2-d1)/k, 0.0, 1.0 );
     return mix( d2, d1, h ) - k*h*(1.0-h); }
 
 
+//A função agora une três objetos;
 float sdfShape(vec3 p){
-  //return opUnion(
   float op1 = opSmoothUnion(
                 sdSphere(p, vec3(sin(u_time)*0.2, 1.0-cos(u_time), sin(u_time*2.0)*0.5), 1. +sin(u_time * 5.0) * 0.1),
                 sdSphere(p, vec3(sin(u_time), cos(u_time), sin(u_time*2.0)*0.5), 0.7),
@@ -37,17 +40,14 @@ float sdfShape(vec3 p){
                 op1,
                 sdBox(p, vec3(0.3, 0.3, 0.3)),
                 0.4
-                );
+          );
   return op2;
+
 }
-
-
-
 
 
 //http://jamie-wong.com/2016/07/15/ray-marching-signed-distance-functions/
 //Jamie Wong - Ray Marching
-
 #define EPSILON 0.00001
 vec3 estimateNormal(vec3 p) {
     return normalize(vec3(
@@ -89,12 +89,16 @@ void main(){
   vec3 lightDir = normalize(vec3(-1.0));
   lightDir = normalize(vec3(sin(u_time), cos(u_time), -0.5));
 
+  //Calcula o sombreamento da face
   float shading = dot(lightDir, normal);
 
   if(dist > 10.0){
     shading = 0.4;
   }
 
+
+  //Agora estamos interpolando as cores do primeiro arquivo em função do sombreamento
   gl_FragColor = vec4(mix(corA, corB, shading), 1.0);
+  //gl_FragColor = vec4(vec3(shading), 1.0);
 
 }

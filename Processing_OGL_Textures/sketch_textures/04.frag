@@ -15,26 +15,27 @@ uniform sampler2D u_texture;
 void main() {
     vec2 st = gl_FragCoord.st/u_resolution;
 
-    //Polar coordinates
+    //Transforma em coordenadas polares
     vec2 pos = vec2(0.5)-st;
     float r = length(pos)*2.0;
-    //float r = length(pos)*20.0;
     float a = atan(pos.y,pos.x);
 
 
+    //Quantos ciclos tem a imagem?
     //vec2 uv = vec2(a /PI, 1.0- r);
-    vec2 uv = vec2(a /PI * 4, 1.0- r);
     //vec2 uv = vec2(a /PI * 1000, 1.0- r);
-
+    vec2 uv = vec2(a /PI * 4, 1.0- r);
 
     vec4 col = texture2D(u_texture, fract(uv));
 
-
+    //Inverte a cor
     col.xyz = vec3(1.0) - col.xyz;
 
-    //vec2 uv2 = uv + vec2(sin(u_time + st.y * 3.14) * 0.2, 0.0);
-    //uv2 = fract(uv2);
+    //Aqui ele anima a uv anterior;
+    vec2 uv2 = uv + vec2(sin(u_time + st.y * 3.14) * 0.2, 0.0);
+    uv2 = fract(uv2);
 
+    //Descomente a próxima linha para ver a animação 
     //col = texture2D(u_texture, uv2);
 
     gl_FragColor = col;

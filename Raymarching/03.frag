@@ -51,19 +51,19 @@ void main(){
   vec3 origin = vec3(0.0, 0.0, -3.0);
   float dist = raymarch(origin, direction);
 
-
   vec3 p = origin + dist*direction;
-
   vec3 normal = estimateNormal(p);
-
 
   //Luz
   vec3 lightDir = normalize(vec3(-1.0));
-  //Luz orbitante
-  lightDir = normalize(vec3(sin(u_time), cos(u_time), sin(u_time * 2.0)));
 
+  //Luz Orbitante com trigonometria
+  //lightDir = normalize(vec3(sin(u_time), cos(u_time), sin(u_time * 2.0)));
+
+  //Calcula ponto produto e retornará quão iluminada é uma face
   float shading = dot(lightDir, normal);
 
+  //Se a distância for maior que 5, retorne um cinza para diferenciar a forma do fundo.
   if(dist > 5.0){
     shading = 0.4;
   }

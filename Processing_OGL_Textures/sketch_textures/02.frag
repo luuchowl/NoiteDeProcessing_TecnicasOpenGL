@@ -13,15 +13,20 @@ void main() {
     vec2 st = gl_FragCoord.st/u_resolution;
     vec2 uv = vec2(st.x, 1.0-st.y);
 
-    vec4 col = texture2D(u_texture, uv);
+    //Identifica a cor do pixel em determinada coordenada da textura;
+    vec4 col = texture2D(u_texture, uv );
 
-    //col = vec4(col.r);
-    col.xyz = vec3(1.0) - col.xyz;
+    //Brincar com as coordenadas
+    //vec4 col = texture2D(u_texture, fract(uv + vec2(sin(u_time + st.y * 3.1416), 0.5) * st.y ) );
 
-    vec2 uv2 = uv + vec2(sin(u_time + st.y * 3.14) * 0.2, 0.0);
-    uv2 = fract(uv2);
+    //Inverte a imagem
+    //col.xyz = vec3(1.0) - col.xyz;
 
-    col = texture2D(u_texture, uv2);
-
+    //Teste com outras interferências no UV
+    //vec2 uv2 = uv + vec2(sin(u_time + st.y * 3.14) * 0.2, 0.0);
+    //uv2 = fract(uv2);
+    //col = texture2D(u_texture, uv2);
+    
     gl_FragColor = col;
+
 }
